@@ -1,0 +1,40 @@
+#include <DHT.h> // thu vien cua sensor nhiet do + do am
+
+const int DHTPIN = 7;       //Đọc dữ liệu từ DHT11 ở chân 2 trên mạch Arduino
+const int DHTTYPE = DHT11; //Khai báo loại cảm biến, có 2 loại là DHT11 và DHT22
+
+int greenPin = 4; // Dung chan digital so 4 cho den led xanh
+int orangePin = 5; // Dung chan digital so 5 cho den led cam
+int redPin = 6; // Dung chan digital so 6 cho den led do
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();         // Khởi động cảm biến
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+}
+
+void turnoffAllLED () { // tat tat ca led troc khi thay doi trang thai
+  digitalWrite(redPin, LOW);
+  digitalWrite(orangePin, LOW);
+  digitalWrite(greenPin, LOW);
+}
+
+void loop() {
+  float h = dht.readHumidity();    //Đọc độ ẩm
+  float t = dht.readTemperature(); //Đọc nhiệt độ
+  Serial.println(t);
+  if (t >= 30) {
+    turnoffAllLED();
+    digitalWrite(redPin, HIGH);
+  } else if (25 < t && t < 30) {
+    turnoffAllLED();
+    digitalWrite(orangePin, HIGH);
+  } else {
+    turnoffAllLED();
+    digitalWrite(greenPin, HIGH);
+  }
+  delay(1000);                     //Đợi 1 giây
+}
